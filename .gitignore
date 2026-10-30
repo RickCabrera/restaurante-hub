@@ -10,3 +10,7 @@ uploads/
 apps/mobile/android
 apps/desktop/release
 .turbo
+
+# Archivos locales
+dump.rdb
+*.tsbuildinfo
