@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { CatalogPage } from './CatalogPage';
 
 export const adminRoutes: RouteObject[] = [
-  { path: 'insumos', element: <UnderConstruction title="Insumos" /> },
-  { path: 'proveedores', element: <UnderConstruction title="Proveedores" /> },
+  { path: 'insumos', element: <CatalogPage /> },
+  { path: 'proveedores', element: <CatalogPage initialTab="proveedores" /> },
 ];

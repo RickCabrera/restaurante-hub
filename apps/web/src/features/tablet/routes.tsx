@@ -1,6 +1,4 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { TabletPage } from './TabletPage';
 
-export const tabletRoutes: RouteObject[] = [
-  { index: true, element: <UnderConstruction title="Tablet de área" /> },
-];
+export const tabletRoutes: RouteObject[] = [{ index: true, element: <TabletPage /> }];

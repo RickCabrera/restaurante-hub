@@ -1,6 +1,4 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { SettingsPage } from './SettingsPage';
 
-export const adminRoutes: RouteObject[] = [
-  { path: 'configuracion', element: <UnderConstruction title="Configuración" /> },
-];
+export const adminRoutes: RouteObject[] = [{ path: 'configuracion', element: <SettingsPage /> }];

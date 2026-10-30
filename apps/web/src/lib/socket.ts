@@ -89,6 +89,7 @@ export function useRealtime<T = any>(event: string | string[], handler: (payload
 export function useSocketStatus(): boolean {
   const [connected, setConnected] = useState(() => getSocket().connected);
   const session = useAuth((s) => s.session);
+  const staffToken = useAuth((s) => s.staff?.token);
   useEffect(() => {
     const s = getSocket();
     const on = () => setConnected(true);
@@ -100,6 +101,6 @@ export function useSocketStatus(): boolean {
       s.off('connect', on);
       s.off('disconnect', off);
     };
-  }, [session]);
+  }, [session, staffToken]);
   return connected;
 }

@@ -1,6 +1,4 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { DashboardPage } from './DashboardPage';
 
-export const adminRoutes: RouteObject[] = [
-  { index: true, element: <UnderConstruction title="Inicio" /> },
-];
+export const adminRoutes: RouteObject[] = [{ index: true, element: <DashboardPage /> }];

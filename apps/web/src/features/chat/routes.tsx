@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { ChatPage } from './ChatPage';
 
 export const adminRoutes: RouteObject[] = [
-  { path: 'chat', element: <UnderConstruction title="Mensajes" /> },
-  { path: 'chat/:conversationId', element: <UnderConstruction title="Conversación" /> },
+  { path: 'chat', element: <ChatPage /> },
+  { path: 'chat/:conversationId', element: <ChatPage /> },
 ];

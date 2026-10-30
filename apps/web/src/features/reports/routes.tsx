@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { ReportsHub, RequisitionsReport } from './ReportsPages';
 
 export const adminRoutes: RouteObject[] = [
-  { path: 'reportes', element: <UnderConstruction title="Reportes" /> },
-  { path: 'reportes/requisiciones', element: <UnderConstruction title="Reporte de requisiciones" /> },
+  { path: 'reportes', element: <ReportsHub /> },
+  { path: 'reportes/requisiciones', element: <RequisitionsReport /> },
 ];
