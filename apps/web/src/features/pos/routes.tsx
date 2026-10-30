@@ -1,13 +1,27 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { PosLayout } from './PosLayout';
+import { FloorPage } from './FloorPage';
+import { TicketPage } from './TicketPage';
+import { CashPage } from './CashPage';
+import { TablesAdminPage } from './admin/TablesAdminPage';
+import { CashAdminPage } from './admin/CashAdminPage';
+import { PosReportPage } from './admin/PosReportPage';
 
+// /pos — pantalla completa con su propia barra (sin menú lateral)
 export const posRoutes: RouteObject[] = [
-  { index: true, element: <UnderConstruction title="Punto de venta" /> },
-  { path: 'cuenta/:id', element: <UnderConstruction title="Cuenta" /> },
-  { path: 'caja', element: <UnderConstruction title="Caja" /> },
+  {
+    element: <PosLayout />,
+    children: [
+      { index: true, element: <FloorPage /> },
+      { path: 'cuenta/:id', element: <TicketPage /> },
+      { path: 'caja', element: <CashPage /> },
+    ],
+  },
 ];
+
+// /admin/...
 export const adminRoutes: RouteObject[] = [
-  { path: 'caja', element: <UnderConstruction title="Caja y cortes" /> },
-  { path: 'mesas', element: <UnderConstruction title="Mesas" /> },
-  { path: 'reportes/pos', element: <UnderConstruction title="Reporte de punto de venta" /> },
+  { path: 'caja', element: <CashAdminPage /> },
+  { path: 'mesas', element: <TablesAdminPage /> },
+  { path: 'reportes/pos', element: <PosReportPage /> },
 ];

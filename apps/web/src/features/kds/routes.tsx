@@ -1,6 +1,4 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { KdsPage } from './KdsPage';
 
-export const kdsRoutes: RouteObject[] = [
-  { index: true, element: <UnderConstruction title="Pantalla de cocina" /> },
-];
+export const kdsRoutes: RouteObject[] = [{ index: true, element: <KdsPage /> }];
