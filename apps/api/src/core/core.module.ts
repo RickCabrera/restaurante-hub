@@ -8,6 +8,7 @@ import { JobsService } from '../jobs/jobs.service';
 import { StorageService } from '../storage/storage.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { WhatsappClient } from '../whatsapp/client/whatsapp.client';
+import { BackupService } from '../backup/backup.service';
 
 /**
  * Servicios transversales disponibles en toda la API sin importar módulos:
@@ -17,7 +18,7 @@ import { WhatsappClient } from '../whatsapp/client/whatsapp.client';
 @Module({
   providers: [
     TokenService, SettingsService, AuditService, RealtimeService, RealtimeGateway,
-    JobsService, StorageService, NotificationsService, WhatsappClient,
+    JobsService, StorageService, NotificationsService, WhatsappClient, BackupService,
   ],
   exports: [
     TokenService, SettingsService, AuditService, RealtimeService,

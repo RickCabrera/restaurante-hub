@@ -1,0 +1,27 @@
+# Desarrollo local: base de datos y Redis. `pnpm db:up`
+# Para probar la imagen completa: docker compose --profile app up --build
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: restaurante_hub
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+  app:
+    profiles: ["app"]
+    build: .
+    depends_on: [postgres, redis]
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/restaurante_hub
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: cambia-esto-por-un-secreto-largo-1234567890
+      APP_URL: http://localhost:3000
+      API_URL: http://localhost:3000
+volumes:
+  pgdata:
