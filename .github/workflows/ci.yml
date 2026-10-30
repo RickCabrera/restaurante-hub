@@ -45,6 +45,8 @@ jobs:
       JWT_REFRESH_SECRET: ci-jwt-refresh-secret-not-for-production-0123456789
       APP_URL: http://localhost:5173
       API_URL: http://localhost:3000
+      E2E_DATABASE_URL: postgres://postgres:postgres@localhost:5432/restaurante_hub_test
+      GEO_PROVIDER: mock
 
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +88,9 @@ jobs:
 
       - name: Migraciones de BD (test)
         working-directory: apps/api
-        run: npx ts-node --transpile-only src/db/migrate.ts
+        run: |
+          npx ts-node --transpile-only src/db/migrate.ts
+          SEED_RESET=1 npx ts-node --transpile-only src/db/seed.ts
 
       - name: Pruebas unitarias API
         run: pnpm --filter @rh/api test
