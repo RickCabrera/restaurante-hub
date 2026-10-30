@@ -10,14 +10,31 @@ function hexToRgb(hex: string): [number, number, number] | null {
 const mix = (a: [number, number, number], b: [number, number, number], t: number) =>
   a.map((v, i) => Math.round(v + (b[i] - v) * t)) as [number, number, number];
 
+let lastPrimary: string | null = null;
+let listening = false;
+
+function isDark(): boolean {
+  const t = document.documentElement.dataset.theme;
+  if (t === 'dark') return true;
+  if (t === 'light') return false;
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+}
+
 export function applyBrand(primary?: string | null) {
   const rgb = primary ? hexToRgb(primary) : null;
   if (!rgb) return;
+  lastPrimary = primary!;
+  if (!listening && window.matchMedia) {
+    listening = true;
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => lastPrimary && applyBrand(lastPrimary));
+  }
   const root = document.documentElement.style;
   const fmt = (c: number[]) => c.join(' ');
   root.setProperty('--brand', fmt(rgb));
-  root.setProperty('--brand-50', fmt(mix(rgb, [255, 255, 255], 0.92)));
-  root.setProperty('--brand-100', fmt(mix(rgb, [255, 255, 255], 0.82)));
+  // Tintes suaves: sobre blanco en modo claro, sobre la superficie oscura en modo oscuro
+  const base: [number, number, number] = isDark() ? [24, 21, 19] : [255, 255, 255];
+  root.setProperty('--brand-50', fmt(mix(rgb, base, isDark() ? 0.82 : 0.92)));
+  root.setProperty('--brand-100', fmt(mix(rgb, base, isDark() ? 0.68 : 0.82)));
   root.setProperty('--brand-600', fmt(mix(rgb, [0, 0, 0], 0.12)));
   root.setProperty('--brand-700', fmt(mix(rgb, [0, 0, 0], 0.26)));
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', primary!);
