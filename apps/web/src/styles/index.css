@@ -1,0 +1,98 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/bricolage-grotesque';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tokens de color (RGB sin alfa para usar con Tailwind /<alpha>). La marca se sobreescribe en tiempo de ejecución con los colores del negocio. */
+:root {
+  --brand: 232 93 4;
+  --brand-50: 255 244 235;
+  --brand-100: 255 228 207;
+  --brand-600: 204 80 3;
+  --brand-700: 168 66 2;
+  --ink: 28 25 23;
+  --ink-soft: 68 64 60;
+  --ink-mute: 120 113 108;
+  --surface: 255 250 245;
+  --surface-raised: 255 255 255;
+  --surface-sunken: 245 238 230;
+  --line: 231 222 212;
+  --ok: 22 163 74;
+  --warn: 217 119 6;
+  --danger: 220 38 38;
+  --info: 37 99 235;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ink: 245 241 237;
+    --ink-soft: 214 207 200;
+    --ink-mute: 160 152 145;
+    --surface: 24 21 19;
+    --surface-raised: 36 32 29;
+    --surface-sunken: 16 14 13;
+    --line: 60 54 49;
+    --brand-50: 60 30 10;
+    --brand-100: 90 45 15;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --ink: 245 241 237;
+  --ink-soft: 214 207 200;
+  --ink-mute: 160 152 145;
+  --surface: 24 21 19;
+  --surface-raised: 36 32 29;
+  --surface-sunken: 16 14 13;
+  --line: 60 54 49;
+  --brand-50: 60 30 10;
+  --brand-100: 90 45 15;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  @apply bg-surface text-ink font-sans antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@layer components {
+  .h-display {
+    @apply font-display tracking-tight;
+  }
+  .card {
+    @apply bg-surface-raised border border-line rounded-2xl shadow-card;
+  }
+  .input {
+    @apply w-full h-11 px-3.5 rounded-xl border border-line bg-surface-raised text-ink placeholder:text-ink-mute
+      focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand transition;
+  }
+  .label {
+    @apply block text-sm font-medium text-ink-soft mb-1.5;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .scroll-thin {
+    scrollbar-width: thin;
+  }
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
