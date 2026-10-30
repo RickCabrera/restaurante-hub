@@ -1,0 +1,15 @@
+/* delivery-common/delivery.css — animaciones compartidas: .rh-order-flash (tarjeta nueva), .rh-pulse-brand (badge). */
+@keyframes rh-flash {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--brand) / 0.55); background-color: rgb(var(--surface-raised)); }
+  50% { box-shadow: 0 0 0 8px rgb(var(--brand) / 0); background-color: rgb(var(--brand) / 0.12); }
+}
+.rh-order-flash {
+  animation: rh-flash 1.2s ease-in-out infinite;
+  border-color: rgb(var(--brand));
+}
+@keyframes rh-pulse-brand {
+  0% { box-shadow: 0 0 0 0 rgb(var(--brand) / 0.6); }
+  100% { box-shadow: 0 0 0 10px rgb(var(--brand) / 0); }
+}
+.rh-pulse-brand { animation: rh-pulse-brand 1.4s ease-out infinite; }
+.leaflet-container { font: inherit; }

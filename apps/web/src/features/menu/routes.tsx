@@ -1,6 +1,4 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { MenuPage } from './MenuPage';
 
-export const adminRoutes: RouteObject[] = [
-  { path: 'menu', element: <UnderConstruction title="Menú" /> },
-];
+export const adminRoutes: RouteObject[] = [{ path: 'menu', element: <MenuPage /> }];

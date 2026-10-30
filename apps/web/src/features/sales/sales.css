@@ -1,0 +1,24 @@
+/* Paleta categórica de gráficas (validada: CVD/contraste). Orden fijo por entidad. Pasos propios para oscuro. */
+.rh-sales {
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --s3: #1baf7a;
+  --s4: #eda100;
+  --s5: #e87ba4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .rh-sales {
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --s5: #d55181;
+  }
+}
+:root[data-theme='dark'] .rh-sales {
+  --s1: #3987e5;
+  --s2: #d95926;
+  --s3: #199e70;
+  --s4: #c98500;
+  --s5: #d55181;
+}

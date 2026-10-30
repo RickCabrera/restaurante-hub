@@ -1,7 +1,8 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { CustomersPage } from './CustomersPage';
+import { CustomerDetailPage } from './CustomerDetailPage';
 
 export const adminRoutes: RouteObject[] = [
-  { path: 'clientes', element: <UnderConstruction title="Clientes" /> },
-  { path: 'clientes/:id', element: <UnderConstruction title="Cliente" /> },
+  { path: 'clientes', element: <CustomersPage /> },
+  { path: 'clientes/:id', element: <CustomerDetailPage /> },
 ];

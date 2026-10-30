@@ -1,6 +1,4 @@
 import type { RouteObject } from 'react-router-dom';
-import { UnderConstruction } from '@/pages/StatusPages';
+import { ZonesPage } from './ZonesPage';
 
-export const adminRoutes: RouteObject[] = [
-  { path: 'zonas', element: <UnderConstruction title="Sucursales y zonas" /> },
-];
+export const adminRoutes: RouteObject[] = [{ path: 'zonas', element: <ZonesPage /> }];
