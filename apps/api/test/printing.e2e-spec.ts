@@ -3,7 +3,7 @@
  * BD: restaurante_hub_c. Ejecutar: npx jest --config test/jest-e2e.json --runInBand printing
  */
 process.env.NODE_ENV = 'test';
-process.env.DATABASE_URL = process.env.E2E_DATABASE_URL ?? 'postgres://postgres@localhost:5432/restaurante_hub_c';
+process.env.DATABASE_URL = process.env.E2E_DATABASE_URL ?? 'postgres://postgres@localhost:5432/restaurante_hub_test';
 process.env.JWT_SECRET = process.env.JWT_SECRET ?? 'e2e-secret-change-me-1234567890';
 delete process.env.REDIS_URL;
 

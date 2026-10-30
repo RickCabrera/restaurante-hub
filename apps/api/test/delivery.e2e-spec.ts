@@ -4,7 +4,7 @@
  * Geocodificación: MockGeo (sin internet).
  */
 process.env.NODE_ENV = 'test';
-process.env.DATABASE_URL = process.env.E2E_DATABASE_URL ?? 'postgres://postgres@localhost:5432/restaurante_hub_b';
+process.env.DATABASE_URL = process.env.E2E_DATABASE_URL ?? 'postgres://postgres@localhost:5432/restaurante_hub_test';
 process.env.JWT_SECRET = process.env.JWT_SECRET ?? 'e2e-secret-change-me-1234567890';
 process.env.WHATSAPP_VERIFY_TOKEN = 'verify-e2e';
 process.env.APP_URL = 'https://app.e2e';
