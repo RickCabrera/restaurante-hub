@@ -13,6 +13,7 @@ import { timeAgo } from '@/lib/format';
 import { assetUrl } from '@/lib/config';
 import { Avatar, Modal, toast } from '@/ui';
 import { useBadges } from '@/app/badges';
+import { useGlobalBadges } from '@/app/useGlobalBadges';
 
 interface NotificationItem {
   id: string;
@@ -51,6 +52,7 @@ export function AdminLayout() {
   const qc = useQueryClient();
   const badges = useBadges((s) => s.counts);
   const location = useLocation();
+  useGlobalBadges();
 
   const notif = useQuery({
     queryKey: ['notifications'],
@@ -60,6 +62,8 @@ export function AdminLayout() {
 
   useRealtime<NotificationItem>(RT.NOTIFICATION, (n) => {
     qc.invalidateQueries({ queryKey: ['notifications'] });
+    // El monitor de pedidos tiene su propia alarma y tarjetas: no duplicar sonido ni aviso ahí.
+    if (n.type === 'ORDER_NEW' && window.location.pathname.startsWith('/admin/pedidos')) return;
     const urgent = n.type.includes('URGENT') || n.type === 'HUMAN_HANDOFF' || n.type === 'PRINT_ERROR';
     if (urgent) sounds.urgent();
     else if (n.type.startsWith('ORDER_NEW') || n.type === 'REQUISITION_NEW') sounds.newOrder();

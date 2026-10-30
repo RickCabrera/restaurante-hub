@@ -624,3 +624,24 @@ README técnico (correr en local, arquitectura, despliegue) + guía de usuario c
 5. **Aprobación de requisiciones:** por defecto la dueña aprueba; configurable por insumo (`autoApprove`).
 6. **Pagos:** efectivo, tarjeta a la entrega y transferencia. Pagos en línea quedan fuera.
 7. **Entregables:** web (PWA) + app de escritorio Windows (.exe) + app Android (.apk), generados por CI.
+
+---
+
+## 6. Estado de construcción (30-oct-2026)
+
+**Todo el código de F0 a F4 está construido.** Solo queda la Fase F5 (integración de servicios externos) → [`docs/PROMPT-CHROME-INTEGRACION.md`](docs/PROMPT-CHROME-INTEGRACION.md).
+
+| Fase | Estado | Notas |
+|---|---|---|
+| F0 Cimientos | ✅ | Drizzle ORM en lugar de Prisma (sin binarios externos; migraciones en JS puro) |
+| F1 Requisiciones | ✅ | API + tablet + panel; cola offline; PIN; chat; lista de compras PDF/WhatsApp/impresa |
+| F2 Delivery + WhatsApp | ✅ | Bot completo con simulador; sitio `/pedir`; seguimiento; repartidor; zonas con mapa |
+| F3 Valor agregado | ✅ | Reportes, promociones, cupones, fidelización, marca, multi-sucursal |
+| F3b POS opcional | ✅ | Mesas, cuentas, cobro, división, caja y cortes X/Z; se activa en Configuración |
+| F3c Apps nativas | ✅ | `.exe` (Electron + agente) y `.apk` (Capacitor + Bluetooth) generados por GitHub Actions |
+| F4 Calidad y despliegue | ✅ | 144 pruebas unitarias API + 36 E2E + 58 de paquetes; Dockerfile único; Railway; respaldos |
+| F5 Integración externa | ⏳ | Railway, Meta WhatsApp, Google Maps (opcional), Cloudflare R2 |
+
+**Pendiente de validar con hardware/servicios reales:** impresoras físicas (red/USB/Windows/Bluetooth), app de escritorio en Windows, APK en Android, WhatsApp Cloud API real, Google Maps real.
+
+**Fuera de alcance confirmado:** facturación CFDI, GPS en vivo del repartidor, pagos en línea, verificación del teléfono por código en la web, pedidos programados con la tienda cerrada.

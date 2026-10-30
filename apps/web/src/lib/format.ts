@@ -37,7 +37,9 @@ export function minutesSince(d?: string | Date | null): number {
 
 export const initials = (name: string) =>
   name
+    .replace(/\(.*?\)/g, ' ')
     .split(/\s+/)
+    .map((p) => p.replace(/[^\p{L}\p{N}]/gu, ''))
     .filter(Boolean)
     .slice(0, 2)
     .map((p) => p[0]?.toUpperCase())
