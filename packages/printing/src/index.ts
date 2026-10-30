@@ -1,3 +1,10 @@
 export * from './document';
 export * from './templates.types';
 export * from './templates';
+export { renderEscPos, CODEPAGE_NUMBER } from './escpos';
+export type { EscPosOptions, Dialect } from './escpos';
+export { renderHtml, qrSvg } from './html';
+export type { HtmlOptions } from './html';
+export { encodeText, toPrintable, canEncode, utf8Bytes } from './codepage';
+export type { CodePage } from './codepage';
+export { wrapText, layoutRow, layoutColumns, pad } from './layout';

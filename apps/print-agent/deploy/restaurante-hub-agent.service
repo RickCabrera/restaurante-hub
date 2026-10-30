@@ -1,0 +1,30 @@
+# systemd unit para el agente de impresión de Restaurante Hub (Linux / Raspberry Pi)
+# Instalar:  sudo cp restaurante-hub-agent.service /etc/systemd/system/
+#            sudo systemctl daemon-reload && sudo systemctl enable --now restaurante-hub-agent
+# Logs:      journalctl -u restaurante-hub-agent -f
+[Unit]
+Description=Restaurante Hub - agente de impresion
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=rhagent
+Group=lp
+# Grupos extra para /dev/usb/lp* (lp) y puertos serial (dialout)
+SupplementaryGroups=lp dialout
+WorkingDirectory=/opt/restaurante-hub-agent
+# El archivo de configuración con apiUrl y token (creado con "rh-print-agent setup" o por install-raspberry.sh)
+Environment=RH_AGENT_CONFIG=/etc/restaurante-hub/agent.json
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/env node /opt/restaurante-hub-agent/dist/cli.js start
+Restart=always
+RestartSec=5
+# Endurecimiento básico
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

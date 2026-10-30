@@ -8,6 +8,10 @@
 //
 // Todos se conectan al namespace Socket.IO "/rt" de la API.
 // La API envía cada trabajo a UN solo socket registrado para esa impresora (sala `printer:{id}`).
+//
+// Acks: toda respuesta de la API a un evento con callback llega envuelta como
+//   { ok: true, data: <payload> }  ó  { ok: false, error: "mensaje" }
+// (p.ej. AGENT_HELLO → { ok, data: AgentHelloAck }). DISCOVERED acepta { printers: DiscoveredPrinter[] }.
 
 import type { PrinterConnection, PrinterDialect, PrintJobKind } from './enums';
 

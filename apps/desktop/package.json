@@ -7,10 +7,11 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "icon": "node scripts/gen-icon.mjs",
     "start": "pnpm build && electron .",
-    "dist:win": "pnpm build && electron-builder --win nsis --publish never",
-    "dist:linux": "pnpm build && electron-builder --linux AppImage --publish never",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "dist:win": "pnpm build && node scripts/package.mjs --win",
+    "dist:linux": "pnpm build && node scripts/package.mjs --linux"
   },
   "dependencies": {
     "@rh/print-agent": "workspace:*",

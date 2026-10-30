@@ -1,0 +1,114 @@
+name: Release Android (.apk)
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: 'URL de la API a precargar (opcional; si se omite la app la pide al abrir)'
+        required: false
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Compilar web
+        run: |
+          pnpm --filter @rh/shared build
+          pnpm --filter @rh/printing build
+          pnpm --filter @rh/web build
+        env:
+          VITE_API_URL: ${{ inputs.api_url || vars.VITE_API_URL }}
+          VITE_GOOGLE_MAPS_API_KEY: ${{ vars.VITE_GOOGLE_MAPS_API_KEY }}
+          VITE_BUSINESS_SLUG: ${{ vars.VITE_BUSINESS_SLUG }}
+
+      - name: Copiar web a www
+        working-directory: apps/mobile
+        run: node scripts/copy-web.mjs
+
+      - name: Crear proyecto Android
+        working-directory: apps/mobile
+        run: |
+          if [ ! -d android ]; then npx cap add android; fi
+          node scripts/patch-android.mjs
+          npx cap sync android
+
+      - name: Versión
+        working-directory: apps/mobile/android
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then NAME="${GITHUB_REF_NAME#v}"; else NAME="1.0.${GITHUB_RUN_NUMBER}"; fi
+          sed -i -E "s/versionCode [0-9]+/versionCode ${GITHUB_RUN_NUMBER}/; s/versionName \"[^\"]*\"/versionName \"${NAME}\"/" app/build.gradle
+          grep -E "versionCode|versionName" app/build.gradle
+
+      - name: APK debug
+        working-directory: apps/mobile/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Preparar keystore
+        if: env.HAS_KEYSTORE == 'true'
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          echo "RH_KEYSTORE_PATH=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+
+      - name: APK release firmado
+        if: env.HAS_KEYSTORE == 'true'
+        working-directory: apps/mobile/android
+        env:
+          RH_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          RH_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          RH_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Renombrar APKs
+        run: |
+          mkdir -p out
+          cp apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk out/RestauranteHub-debug.apk
+          if [ -f apps/mobile/android/app/build/outputs/apk/release/app-release.apk ]; then
+            cp apps/mobile/android/app/build/outputs/apk/release/app-release.apk out/RestauranteHub.apk
+          fi
+          ls -la out
+
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: restaurante-hub-android
+          path: out/*.apk
+          if-no-files-found: error
+
+      - name: Adjuntar al Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/*.apk

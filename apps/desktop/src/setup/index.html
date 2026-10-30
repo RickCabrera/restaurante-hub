@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:" />
+<title>Restaurante Hub · Configuración</title>
+<style>
+  :root { --bg:#0f172a; --card:#111c33; --line:#23314f; --text:#e2e8f0; --muted:#94a3b8; --accent:#f97316; --ok:#22c55e; --err:#ef4444; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  main { padding: 28px 28px 20px; }
+  .brand { display:flex; align-items:center; gap:12px; margin-bottom: 18px; }
+  .logo { width:44px; height:44px; border-radius:12px; background: var(--accent); display:grid; place-items:center; font-weight:800; font-size:18px; color:#fff; }
+  h1 { font-size: 20px; margin: 0; } .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  section { background: var(--card); border:1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  label { display:block; font-weight:600; font-size:14px; margin-bottom: 6px; }
+  .hint { color: var(--muted); font-size: 12.5px; margin: 6px 0 0; line-height: 1.45; }
+  input[type=text], input[type=url], input[type=password] { width:100%; padding: 11px 12px; border-radius: 10px; border:1px solid var(--line); background:#0b1428; color: var(--text); font-size: 15px; outline: none; }
+  input:focus { border-color: var(--accent); }
+  .row { display:flex; gap: 8px; }
+  .row input { flex: 1; }
+  button { border:0; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight:600; cursor:pointer; }
+  button.primary { background: var(--accent); color:#fff; }
+  button.ghost { background: transparent; color: var(--text); border:1px solid var(--line); }
+  button:disabled { opacity: .5; cursor: default; }
+  .status { font-size: 13px; margin-top: 8px; min-height: 18px; }
+  .status.ok { color: var(--ok); } .status.err { color: var(--err); }
+  .check { display:flex; gap:10px; align-items:flex-start; padding: 6px 0; }
+  .check input { margin-top: 3px; width:18px; height:18px; accent-color: var(--accent); }
+  .check b { font-size: 14px; } .check span { display:block; color: var(--muted); font-size: 12.5px; font-weight: 400; }
+  details summary { cursor:pointer; color: var(--muted); font-size: 13px; }
+  footer { display:flex; justify-content: space-between; align-items:center; gap: 8px; margin-top: 6px; }
+  .ver { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">
+    <div class="logo">RH</div>
+    <div><h1>Restaurante Hub</h1><div class="sub">Configuración de este equipo</div></div>
+  </div>
+
+  <form id="form" autocomplete="off">
+    <section>
+      <label for="serverUrl">Dirección del sistema</label>
+      <div class="row">
+        <input id="serverUrl" type="text" placeholder="https://mi-restaurante.up.railway.app" required />
+        <button type="button" class="ghost" id="testBtn">Probar</button>
+      </div>
+      <div id="testStatus" class="status"></div>
+      <p class="hint">Es la misma dirección con la que entras al sistema desde el navegador.</p>
+      <details>
+        <summary>Opciones avanzadas</summary>
+        <label for="apiUrl" style="margin-top:10px">Dirección de la API (opcional)</label>
+        <input id="apiUrl" type="text" placeholder="Igual que la dirección del sistema" />
+        <p class="hint">Solo si la API está en otro dominio que la app web.</p>
+      </details>
+    </section>
+
+    <section>
+      <label for="agentToken">Token del agente de impresión (opcional)</label>
+      <input id="agentToken" type="password" placeholder="Pega aquí el token" />
+      <p class="hint">
+        Con el token, esta PC imprime comandas y tickets en impresoras de red, USB, instaladas en Windows o COM,
+        aunque la ventana esté minimizada. Créalo en <b>Configuración → Impresoras → Agentes</b> → “Nuevo agente”.
+        Déjalo vacío si esta PC no imprime.
+      </p>
+    </section>
+
+    <section>
+      <div class="check"><input id="autoStart" type="checkbox" /><label for="autoStart" style="margin:0"><b>Abrir al iniciar Windows</b><span>Recomendado en la PC de caja o cocina.</span></label></div>
+      <div class="check"><input id="kiosk" type="checkbox" /><label for="kiosk" style="margin:0"><b>Modo kiosco</b><span>Pantalla completa sin barras. Para salir: Ctrl+Shift+K o el ícono junto al reloj.</span></label></div>
+    </section>
+
+    <div id="saveStatus" class="status"></div>
+    <footer>
+      <span class="ver" id="ver"></span>
+      <div class="row">
+        <button type="button" class="ghost" id="cancelBtn">Cancelar</button>
+        <button type="submit" class="primary" id="saveBtn">Guardar y abrir</button>
+      </div>
+    </footer>
+  </form>
+</main>
+<script src="setup.js"></script>
+</body>
+</html>

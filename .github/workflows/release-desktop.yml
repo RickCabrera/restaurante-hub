@@ -1,0 +1,76 @@
+name: Release escritorio (Windows .exe)
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependencias (con binario de Electron)
+        run: pnpm install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: ''
+
+      - name: Versión desde el tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          node -e "const f='apps/desktop/package.json';const p=require('./'+f);p.version='$VERSION';require('fs').writeFileSync(f,JSON.stringify(p,null,2)+'\n')"
+
+      - name: Compilar paquetes, agente y app
+        run: |
+          pnpm --filter @rh/shared build
+          pnpm --filter @rh/printing build
+          pnpm --filter @rh/print-agent build
+          pnpm --filter @rh/desktop build
+          pnpm --filter @rh/desktop icon
+
+      - name: Pruebas del agente
+        run: pnpm --filter @rh/print-agent test
+
+      - name: Empaquetar instalador NSIS
+        working-directory: apps/desktop
+        run: node scripts/package.mjs --win --publish never
+        env:
+          # Firma de código opcional: define CSC_LINK (pfx base64) y CSC_KEY_PASSWORD como secretos
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: restaurante-hub-windows
+          path: |
+            apps/desktop/release/*.exe
+            apps/desktop/release/*.blockmap
+            apps/desktop/release/latest.yml
+          if-no-files-found: error
+
+      - name: Adjuntar al Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            apps/desktop/release/*.exe
+            apps/desktop/release/latest.yml
+          fail_on_unmatched_files: false

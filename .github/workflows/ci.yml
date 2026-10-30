@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+  NODE_OPTIONS: --max-old-space-size=4096
+
+jobs:
+  build-test:
+    name: Typecheck, pruebas y build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: restaurante_hub_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/restaurante_hub_test
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: ci-jwt-secret-not-for-production-0123456789
+      JWT_REFRESH_SECRET: ci-jwt-refresh-secret-not-for-production-0123456789
+      APP_URL: http://localhost:5173
+      API_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Compilar paquetes compartidos
+        run: |
+          pnpm --filter @rh/shared build
+          pnpm --filter @rh/printing build
+
+      - name: Typecheck API
+        run: pnpm --filter @rh/api typecheck
+      - name: Typecheck web
+        run: pnpm --filter @rh/web typecheck
+      - name: Typecheck print-agent
+        run: pnpm --filter @rh/print-agent typecheck
+      - name: Typecheck escritorio
+        run: |
+          pnpm --filter @rh/print-agent build
+          pnpm --filter @rh/desktop typecheck
+
+      - name: Pruebas @rh/shared
+        run: pnpm --filter @rh/shared test
+      - name: Pruebas @rh/printing
+        run: pnpm --filter @rh/printing test
+      - name: Pruebas print-agent
+        run: pnpm --filter @rh/print-agent test
+
+      - name: Migraciones de BD (test)
+        working-directory: apps/api
+        run: npx ts-node --transpile-only src/db/migrate.ts
+
+      - name: Pruebas unitarias API
+        run: pnpm --filter @rh/api test
+
+      - name: Pruebas E2E API
+        continue-on-error: false
+        run: |
+          if [ -f apps/api/test/jest-e2e.json ]; then
+            pnpm --filter @rh/api test:e2e
+          else
+            echo "::warning::No existe apps/api/test/jest-e2e.json; se omiten las pruebas E2E"
+          fi
+
+      - name: Build web
+        run: pnpm --filter @rh/web build
+
+      - name: Build API
+        run: pnpm --filter @rh/api build
