@@ -1,0 +1,20 @@
+{
+  "name": "restaurante-hub",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.28.0",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter @rh/api --filter @rh/web dev",
+    "build": "pnpm -r --filter ./packages/** build && pnpm -r --filter @rh/api --filter @rh/web --filter @rh/print-agent build",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "db:up": "docker compose up -d postgres redis",
+    "db:migrate": "pnpm --filter @rh/api db:migrate",
+    "db:seed": "pnpm --filter @rh/api db:seed",
+    "gen:secrets": "node scripts/gen-secrets.mjs",
+    "gen:vapid": "node scripts/gen-vapid.mjs",
+    "create:owner": "pnpm --filter @rh/api create:owner"
+  }
+}

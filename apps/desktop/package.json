@@ -1,0 +1,27 @@
+{
+  "name": "@rh/desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Restaurante Hub - app de escritorio con agente de impresión integrado",
+  "author": "Restaurante Hub",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "pnpm build && electron .",
+    "dist:win": "pnpm build && electron-builder --win nsis --publish never",
+    "dist:linux": "pnpm build && electron-builder --linux AppImage --publish never",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@rh/print-agent": "workspace:*",
+    "@rh/printing": "workspace:*",
+    "@rh/shared": "workspace:*",
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.6.3"
+  }
+}
