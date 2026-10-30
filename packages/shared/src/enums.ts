@@ -200,4 +200,7 @@ export const RT = {
   TICKET_UPDATED: 'pos.ticket.updated',
   TABLE_UPDATED: 'pos.table.updated',
   STORE_STATUS: 'store.status',
+  POS_CASH_UPDATED: 'pos.cash.updated',
+  AREA_UPDATED: 'area.updated',
+  REQUISITION_WINDOW_CLOSING: 'requisition.window_closing',
 } as const;

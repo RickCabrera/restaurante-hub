@@ -1,6 +1,7 @@
 import {
   boolean, doublePrecision, index, integer, jsonb, pgTable, primaryKey, text, uniqueIndex,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 import { areas, businesses, createdAt, devices, fk, id, ts, updatedAt, users } from './core';
 import { conversationTypeEnum, priorityEnum, requisitionStatusEnum, unitEnum } from './enums';
 
@@ -57,12 +58,15 @@ export const requisitions = pgTable('requisition', {
   createdById: fk().references(() => users.id, { onDelete: 'set null' }),
   createdByName: text(),
   clientRequestId: text().notNull(),
+  /** clientRequestId de solicitudes que se agruparon en esta requisición (idempotencia al agrupar) */
+  mergedRequestIds: jsonb().$type<string[]>().notNull().default([]),
   priority: priorityEnum().notNull().default('NORMAL'),
   status: requisitionStatusEnum().notNull().default('ENVIADA'),
   note: text(),
   neededFor: ts(),
   isLate: boolean().notNull().default(false),
   rejectReason: text(),
+  cancelReason: text(),
   reviewNote: text(),
   receptionNote: text(),
   hasDifferences: boolean().notNull().default(false),
@@ -117,7 +121,12 @@ export const conversations = pgTable('conversation', {
   title: text(),
   lastMessageAt: ts(),
   createdAt: createdAt(),
-}, (t) => [index().on(t.businessId, t.type)]);
+}, (t) => [
+  index().on(t.businessId, t.type),
+  // una sola conversación área↔dueña por área y un solo canal general por negocio
+  uniqueIndex('conversation_area_owner_uq').on(t.businessId, t.areaId).where(sql`type = 'AREA_OWNER'`),
+  uniqueIndex('conversation_general_uq').on(t.businessId).where(sql`type = 'GENERAL'`),
+]);
 
 export const messages = pgTable('message', {
   id: id(),

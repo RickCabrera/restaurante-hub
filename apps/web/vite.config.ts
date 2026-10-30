@@ -45,9 +45,9 @@ export default defineConfig({
     port: 5173,
     host: true,
     proxy: {
-      '/api': { target: 'http://localhost:3000', changeOrigin: true },
-      '/uploads': { target: 'http://localhost:3000', changeOrigin: true },
-      '/socket.io': { target: 'http://localhost:3000', ws: true, changeOrigin: true },
+      '/api': { target: process.env.VITE_PROXY_TARGET ?? 'http://localhost:3000', changeOrigin: true },
+      '/uploads': { target: process.env.VITE_PROXY_TARGET ?? 'http://localhost:3000', changeOrigin: true },
+      '/socket.io': { target: process.env.VITE_PROXY_TARGET ?? 'http://localhost:3000', ws: true, changeOrigin: true },
     },
   },
   build: { outDir: 'dist', sourcemap: false, chunkSizeWarningLimit: 1500 },
