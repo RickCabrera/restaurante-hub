@@ -38,9 +38,9 @@ export class JobsService implements OnModuleInit, OnApplicationShutdown {
       return;
     }
     this.connection = new IORedis(loadEnv().REDIS_URL!, { maxRetriesPerRequest: null });
-    this.queue = new Queue('rh-jobs', { connection: this.connection });
+    this.queue = new Queue(loadEnv().QUEUE_NAME, { connection: this.connection });
     this.worker = new Worker(
-      'rh-jobs',
+      loadEnv().QUEUE_NAME,
       async (job) => {
         const h = this.handlers.get(job.name);
         if (!h) throw new Error(`Sin manejador para ${job.name}`);

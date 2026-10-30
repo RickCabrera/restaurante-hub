@@ -26,6 +26,7 @@ const UpdateBusinessSchema = z.object({
       tips: z.array(z.number().min(0).max(100)).max(5).optional(),
       dailySummaryHour: z.number().int().min(0).max(23).nullable().optional(),
       ownerWhatsapp: z.string().max(20).nullable().optional(),
+      printOn: z.enum(['create', 'accept']).optional(),
       notifyOwnerByWhatsapp: z.boolean().optional(),
       urgentEscalationMinutes: z.number().int().min(1).max(240).optional(),
       loyalty: z

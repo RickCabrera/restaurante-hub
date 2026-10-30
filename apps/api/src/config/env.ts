@@ -51,6 +51,10 @@ const EnvSchema = z.object({
   UPLOADS_DIR: z.string().default('./uploads'),
 
   LOG_LEVEL: z.string().default('info'),
+  /** nombre de la cola BullMQ (distinto por instancia si comparten Redis) */
+  QUEUE_NAME: z.string().default('rh-jobs'),
+  GEO_PROVIDER: z.enum(['google', 'nominatim', 'mock']).optional(),
+  NOMINATIM_URL: z.string().default('https://nominatim.openstreetmap.org'),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

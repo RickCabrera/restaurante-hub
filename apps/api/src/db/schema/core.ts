@@ -23,6 +23,8 @@ export interface BusinessSettings {
   tips?: number[];
   dailySummaryHour?: number | null; // hora local 0-23
   ownerWhatsapp?: string | null;
+  /** cuándo se imprimen comandas de delivery: al crear o al aceptar el pedido */
+  printOn?: 'create' | 'accept';
   notifyOwnerByWhatsapp?: boolean;
   urgentEscalationMinutes?: number;
   lowStockWarning?: boolean;
